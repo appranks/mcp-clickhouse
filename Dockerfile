@@ -17,16 +17,14 @@ RUN --mount=type=cache,id=${CACHE_NS}-apt-cache,target=/var/cache/apt,sharing=lo
     --mount=type=cache,id=${CACHE_NS}-apt-lib,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends git build-essential
 
-# Install the project's dependencies using the lockfile and settings
 RUN --mount=type=cache,id=${CACHE_NS}-uv-cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=README.md,target=README.md \
     uv sync --locked --no-install-project --no-dev
 
-# Then, add the rest of the project source code and install it
 COPY . /app
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=${CACHE_NS}-uv-cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
 # Production stage - Use minimal Python image

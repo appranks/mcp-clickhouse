@@ -6,6 +6,9 @@ FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
 ARG BUILDKIT_CACHE_MOUNT_NS
 ARG CACHE_NS=${BUILDKIT_CACHE_MOUNT_NS:-local}
 
+RUN echo "Railway cache namespace: ${BUILDKIT_CACHE_MOUNT_NS}" && \
+    echo "CACHE_NS=${CACHE_NS}"
+
 # Install the project into `/app`
 WORKDIR /app
 
